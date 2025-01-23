@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {assets} from '../assets/assets'
 import { Link , NavLink } from 'react-router-dom'
 
 const Navbar = () => {
+
+  const [visible , setvisible] = useState(false);
   return (
     <div className='flex items-center justify-between py-5 font-medium'>
         <img src={assets.logo} className='w-36 mx-7 ' />
@@ -46,6 +48,23 @@ const Navbar = () => {
             <img src={assets.cart_icon} className='w-[20px] min-w-[20px] cursor-pointer' />
             <p className='text-[9px] absolute bg-black text-white rounded-full h-[15px] w-[16px] text-center flex justify-center items-center bottom-[-4px] right-[-5px]'>0</p>
           </Link>
+
+          
+          <img onClick={()=>setvisible(true)} src={assets.menu_icon} className='w-6 min-w-6 cursor-pointer sm:hidden' alt="" />
+          
+        </div>
+
+        <div className={`absolute top-0 bottom-0 right-0 overflow-hidden bg-white transition-all ${visible? 'w-full' : 'w-0'} `}>
+            <div className='flex flex-col text-gray-600 py-2 '>
+              <div onClick={()=>setvisible(false)} className='flex gap-3  items-center px-3 py-3'>
+                <img  className='h-4 rotate-180' src={assets.dropdown_icon} alt="" />
+                <p className='text-gray-600'>BACK</p>
+              </div>
+              <NavLink onClick={()=>{setvisible(false)}} to="/" className='border px-6 pl-2'>HOME</NavLink>
+              <NavLink onClick={()=>{setvisible(false)}} to="/collection" className='border px-6 pl-2'>COLLECTION</NavLink>
+              <NavLink onClick={()=>{setvisible(false)}} to="/about" className='border px-6 pl-2'>ABOUT</NavLink>
+              <NavLink onClick={()=>{setvisible(false)}} to="/contact" className='border px-6 pl-2'>CONTACT</NavLink>
+            </div>
         </div>
         
     </div>
