@@ -3,7 +3,7 @@ import { ShopContext } from '../context/shopContext'
 import { Link } from 'react-router-dom';
 
 const ProductItems = ({id,image,name,price}) => {
-    console.log(2);
+  
     const {currency} = useContext(ShopContext);
   return (
     
