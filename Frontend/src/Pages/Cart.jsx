@@ -31,7 +31,7 @@ const Cart = () => {
 
   },[cartItem,totalAmount])
 
-  console.log(cartData);
+  console.log(cartData+"satyam");
 
   
 
