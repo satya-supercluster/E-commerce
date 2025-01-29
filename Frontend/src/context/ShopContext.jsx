@@ -12,6 +12,7 @@ const ShopContextProvider = (props) =>{
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItem, setCartItem] = useState([]);
+    const [totalAmount , setTotalAmount] = useState(0);
 
     const addToCart = async (itemId, size) =>{
 
@@ -39,6 +40,45 @@ const ShopContextProvider = (props) =>{
         
     }
 
+    const changeCart = async (itemId, size,quantity) =>{
+
+        if(!size){
+            toast.error('Select Product Size');
+            return ;
+        }
+
+        setCartItem((prevData) => ({
+            ...prevData, // Spread the previous data to keep it intact
+            [itemId]: {
+                ...prevData[itemId], // Spread the existing sizes for the item
+                [size]: quantity, // Update the specific size's value
+            },
+        }));
+        
+    }
+
+    const deleteToCart = async (itemId , size) =>{
+
+        let cartData = structuredClone(cartItem);
+
+        if(cartData[itemId]){
+            if(cartData[itemId][size]){
+                delete cartData[itemId][size];
+            }
+
+            if (Object.keys(cartData[itemId]).length === 0) {
+                delete cartData[itemId];
+            }
+            
+        }
+
+
+        
+        setCartItem(cartData);
+
+        // console.log(cartItem);
+    }
+
     const getCartCount = () =>{
         let totalCount = 0;
 
@@ -58,14 +98,33 @@ const ShopContextProvider = (props) =>{
         return totalCount;
     }
 
+    const getTotalAmount = () =>{
+        let amount = 0;
+
+        for(const items in cartItem){
+            const data = products.find((item)=> item._id === items)
+            for(const item in cartItem[items]){
+                amount = amount + cartItem[items][item]*data.price;
+                
+            }
+        }
+
+        setTotalAmount(amount);
+
+        console.log(amount);
+
+    }
+
     useEffect(()=>{
         // addToCart();
+        
         console.log(cartItem);
     },[cartItem])
     
     
     const value ={
-        products,currency,delivery_fee,search, setSearch,showSearch,setShowSearch,cartItem,addToCart,getCartCount
+        products,currency,delivery_fee,search, setSearch,showSearch,setShowSearch,cartItem,addToCart,getCartCount , deleteToCart,changeCart ,totalAmount,
+        getTotalAmount
     }
 
     return (

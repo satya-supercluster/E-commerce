@@ -7,7 +7,7 @@ import RelatedProduct from '../components/RelatedProduct';
 const Product = () => {
 
   const {productId} = useParams();
-  const {products, currency, addToCart, cartItem }= useContext(ShopContext);
+  const {products, currency, addToCart, cartItem , getTotalAmount}= useContext(ShopContext);
   const [productData , setProductData] = useState(false);
   const [image , setImage] = useState([]);
   const [size, setsize] = useState('');
@@ -24,6 +24,11 @@ const Product = () => {
 
     
   }
+
+ function myfun(id,size){
+  addToCart(id,size);
+  getTotalAmount();
+ }
 
   
 
@@ -75,7 +80,7 @@ const Product = () => {
               </div>
             </div>
  
-            <button onClick={()=>{addToCart(productId,size)}} className='bg-black py-3 px-8 text-white mt-5'>ADD TO CART</button>
+            <button onClick={myfun(productId,size)} className='bg-black py-3 px-8 text-white mt-5'>ADD TO CART</button>
           </div>
 
           <div className='border-t py-5  mt-8 text-sm  text-gray-500 '>
