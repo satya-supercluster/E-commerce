@@ -98,9 +98,8 @@ const ShopContextProvider = (props) =>{
         return totalCount;
     }
 
-    const getTotalAmount = () =>{
+    const getTotalAmount = async () =>{
         let amount = 0;
-
         for(const items in cartItem){
             const data = products.find((item)=> item._id === items)
             for(const item in cartItem[items]){
@@ -111,15 +110,14 @@ const ShopContextProvider = (props) =>{
 
         setTotalAmount(amount);
 
-        console.log(amount);
-
     }
 
     useEffect(()=>{
         // addToCart();
-        
+        console.log(totalAmount);
         console.log(cartItem);
-    },[cartItem])
+
+    },[cartItem,totalAmount])
     
     
     const value ={

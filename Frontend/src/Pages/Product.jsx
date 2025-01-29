@@ -80,7 +80,7 @@ const Product = () => {
               </div>
             </div>
  
-            <button onClick={myfun(productId,size)} className='bg-black py-3 px-8 text-white mt-5'>ADD TO CART</button>
+            <button onClick={()=>{myfun(productId,size)}} className='bg-black py-3 px-8 text-white mt-5'>ADD TO CART</button>
           </div>
 
           <div className='border-t py-5  mt-8 text-sm  text-gray-500 '>
