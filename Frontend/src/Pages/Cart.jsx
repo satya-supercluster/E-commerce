@@ -27,16 +27,16 @@ const Cart = () => {
     }
 
     setCartData(tempData);
-    
+    getTotalAmount();
 
-  },[cartItem])
+  },[cartItem,totalAmount])
 
   console.log(cartData);
 
   
 
   return (
-    <div onClick={()=>getTotalAmount()} className='border-t py-20'>
+    <div className='border-t py-20'>
       <Title text1={'YOUR'} text2={'CART'}/>
       { 
         cartData.map((item)=>{
