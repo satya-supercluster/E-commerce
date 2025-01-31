@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../context/shopContext'
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
+import { Link , NavLink } from 'react-router-dom'
 
 const Cart = () => {
 
-  const {products , currency , cartItem, addToCart ,changeCart, deleteToCart , totalAmount, getTotalAmount} = useContext(ShopContext);
+  const {products , currency , cartItem, addToCart ,changeCart, deleteToCart , totalAmount, getTotalAmount,delivery_fee} = useContext(ShopContext);
 
   const [cartData, setCartData] = useState([]);
  
@@ -36,7 +37,7 @@ console.log(cartData);
   
 
   return (
-    <div className='border-t py-20'>
+    <div className='border-t py-16'>
       <Title text1={'YOUR'} text2={'CART'}/>
       { 
         cartData.map((item)=>{
@@ -71,21 +72,31 @@ console.log(cartData);
         })
       }
 
-      <div className='py-10 flex flex-row '>
-        <div className='sm:w-[60%]'></div>
-        <div className='flex flex-col'>
+      <div className='py-20 flex flex-row justify-end'>
+        {/* <div className='sm:w-[90%]'></div> */}
+        <div className='flex flex-col w-full sm:w-[40%] '>
           <Title text1={'CART'} text2={'TOTALS'}/>
-          <div>
+          <div className='flex justify-between border-b py-2 text-sm'>
             <h1>Subtotal</h1>
-            <h1>{totalAmount}</h1>
+            <h1>{currency}{totalAmount}.00</h1>
           </div>
-          <div>
+          <div className='flex justify-between border-b py-2 text-sm'>
             <h1>Shipping Fee</h1>
+            <h1>{currency}{delivery_fee}.00</h1>
           </div>
-          <div>
+          <div className='flex justify-between py-2 text-sm font-medium font-bold'>
             <h1>Total</h1>
+            <h1>{currency}{totalAmount > 0 ? totalAmount + delivery_fee : '0'}.00</h1>
+
+          </div>
+          <div className='flex justify-end'>
+
+          <Link className='' to={"/place-order"}>
+          <button className='py-3 px-5 bg-black text-white my-5  text-sm '>PROCEED TO CHECKOUT</button>
+          </Link>
           </div>
         </div>
+
       </div>
 
     </div>
