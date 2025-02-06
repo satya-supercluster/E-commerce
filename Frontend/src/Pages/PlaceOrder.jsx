@@ -1,39 +1,82 @@
-import React, { useContext } from 'react'
+import React, { useContext , useState} from 'react'
 import Title from '../components/Title'
 import { ShopContext } from '../context/shopContext'
-import { Link } from 'react-router-dom'
+import { Link , useNavigate} from 'react-router-dom'
 import { assets } from '../assets/assets'
 
 const PlaceOrder = () => {
 
   const {currency, totalAmount, delivery_fee} = useContext(ShopContext);
+  
+    const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    street: "",
+    city: "",
+    state: "",
+    zipcode: "",
+    country: "",
+    phone: "",
+  });
+
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError(""); // Clear error on input change
+  };
+
+  const validateForm = () => {
+    for (let key in formData) {
+      if (!formData[key].trim()) {
+        
+        setError("All fields are required.");
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const onSubmitHandler = (event) => {
+    event.preventDefault();
+    if (validateForm()) {
+      
+      navigate("/order"); // Navigate only if validation passes
+    }
+   
+  };
+
+ 
 
   return (
-    <div className='py-20 border-t flex flex-col sm:flex-row justify-between'>
+    <form onSubmit={onSubmitHandler} className='py-20 border-t flex flex-col sm:flex-row justify-between'>
 
       <div className='w-full sm:w-[45%]'>
         <Title text1={'DELIVERY'} text2={'INFORMATION'}/>
 
-        <div className='flex flex-col gap-3 py-8'>
+        <div  className='flex flex-col gap-3 py-8'>
           <div className='flex gap-3 '>
-            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='First name' required/>
-            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='First name' required/>
+            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='First name' name='firstName' value={formData.firstName} onChange={handleChange} required/>
+            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='Last name' name='lastName' value={formData.lastName} onChange={handleChange} required/>
           </div>
 
-          <input className='border py-2 px-3 rounded border-gray-300 ' type="email" placeholder='Email address' required/>
-          <input className='border py-2 px-3 rounded border-gray-300 ' type="text" placeholder='Street'required />
+          <input className='border py-2 px-3 rounded border-gray-300 ' type="email" placeholder='Email address' name='email' value={formData.email} onChange={handleChange} required/>
+          <input className='border py-2 px-3 rounded border-gray-300 ' type="text" placeholder='Street' name='street' value={formData.street} onChange={handleChange} required />
           
           <div className='flex gap-3'>
-            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='City' required/>
-            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='State' required/>
+            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='City' name='city' value={formData.city} onChange={handleChange} required/>
+            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='State' name='state' value={formData.state} onChange={handleChange} required/>
           </div>
 
           <div className='flex gap-3'>
-            <input className='border py-2 px-3 rounded w-full border-gray-300' type="number" placeholder='Zipcode' required/>
-            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='Country'/>
+            <input className='border py-2 px-3 rounded w-full border-gray-300' type="number" placeholder='Zipcode' name='zipcode' value={formData.zipcode} onChange={handleChange} required/>
+            <input className='border py-2 px-3 rounded w-full border-gray-300' type="text" placeholder='Country' name='country' value={formData.country} onChange={handleChange}required/>
           </div>
 
-          <input className='border py-2 px-3 rounded border-gray-300 ' type="number" placeholder='Phone' required/>
+          <input className='border py-2 px-3 rounded border-gray-300 ' type="number" placeholder='Phone' name='phone' value={formData.phone} onChange={handleChange} required/>
         </div>
 
       </div>
@@ -69,7 +112,7 @@ const PlaceOrder = () => {
                 <img className='h-[20px]' src={assets.stripe_logo} alt="" />
               </div>
               <div className='flex flex-row border py-2 justify-center items-center gap-5 w-3/4 justify-between px-4'>
-                <p className='w-[12px] h-[12px] border border-gray-400 rounded-full'></p>
+                <p className='w-[8%] h-[60%] border border-gray-400 rounded-full'></p>
                 <img className='h-[20px]'  src={assets.razorpay_logo} alt="" />
               </div>
               <div className='flex flex-row border  justify-center items-center gap-5 w-full'>
@@ -78,17 +121,16 @@ const PlaceOrder = () => {
               </div>
             </div>
             <div className='flex justify-end'>
-            
-              <Link className='' to={"/order"}>
-              <button className='py-3 px-16 bg-black text-white my-8  text-sm '>PLACE ORDER</button>
-              </Link>
+                <button type="submit"  className='py-3 px-5 bg-black text-white my-5  text-sm '>PLACE ORDER</button>
             </div>
+            
           </div>
         </div>
 
       </div>
       
-    </div>
+      
+    </form>
   )
 }
 
