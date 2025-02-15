@@ -44,7 +44,7 @@ const PlaceOrder = () => {
     event.preventDefault();
     if (validateForm()) {
       
-      navigate("/order"); // Navigate only if validation passes
+      navigate("/orders"); // Navigate only if validation passes
     }
    
   };
