@@ -26,7 +26,11 @@ cloudinary.cloudinaryConnect();
 app.get('/', (req,res)=>{
     res.send("API Working");
 })
+
 // apit route mount karana h
-// const Upload = require("./routes")
+
+const userRoute = require("./routers/userRoute")
+app.use("/yogi/v1",userRoute);
+
 
 app.listen(PORT, ()=>{console.log(`Server started on port no. ${PORT}`)})
