@@ -30,7 +30,10 @@ app.get('/', (req,res)=>{
 // apit route mount karana h
 
 const userRoute = require("./routers/userRoute")
-app.use("/yogi/v1",userRoute);
+app.use("/yogi/v1/user",userRoute);
+
+const productRouter = require("./routers/productRouter")
+app.use("/yogi/v1/product",productRouter);
 
 
 app.listen(PORT, ()=>{console.log(`Server started on port no. ${PORT}`)})
