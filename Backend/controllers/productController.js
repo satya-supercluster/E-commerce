@@ -19,6 +19,8 @@ const addProduct = async (req,res)=>{
             })
         )
 
+        
+
 
         const productData = {
             name,
