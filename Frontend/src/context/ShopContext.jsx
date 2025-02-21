@@ -1,18 +1,26 @@
 import { createContext, useEffect, useState } from "react";
-import { products } from "../assets/assets";
+// import { products } from "../assets/assets";
 import { toast } from "react-toastify";
+import axios from "axios"
+import { useNavigate } from "react-router-dom";
+
 
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) =>{
 
 
+
     const currency = '$';
     const delivery_fee = 10;
+    const backendUrl  = import.meta.env.VITE_BACKEND_URL;
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItem, setCartItem] = useState([]);
     const [totalAmount , setTotalAmount] = useState(0);
+    const [products, setProducts] = useState([]);
+    const [token , setToken] = useState('');
+    const navigate = useNavigate();
 
     const addToCart = async (itemId, size) =>{
 
@@ -37,6 +45,16 @@ const ShopContextProvider = (props) =>{
         }
 
         setCartItem(cartData);
+
+        if(token){
+            try {
+                await axios.post(backendUrl+'/yogi/v1/cart/add', {itemId, size}, {headers:{token}})
+
+            } catch (error) {
+                console.log(error)
+                toast.error(error.message)
+            }
+        }
         
     }
 
@@ -119,10 +137,47 @@ const ShopContextProvider = (props) =>{
 
     },[cartItem,totalAmount])
     
+    const getProductData = async () =>{
+        try{
+            const response = await axios.get(backendUrl+ "/yogi/v1/product/list")
+            
+            if(response.data.success){
+                // console.log(response.data.products);
+                setProducts(response.data.products);
+            }
+            else{
+                toast.error(response.data.message);
+            }
+            console.log(products)
+        }
+        catch(error){
+            console.log(error);
+            toast.error(error.message)
+        }
+    }
+    
+
+    useEffect(() => {
+        console.log("Updated Products:", products);
+    }, [products]);
+    
+
+    useEffect(()=>{
+        getProductData();
+        console.log(products)
+    },[])
+
+    useEffect(()=>{
+        if(!token && localStorage.getItem('token')){
+            setToken(localStorage.getItem('token'))
+
+        }
+    },[])
     
     const value ={
         products,currency,delivery_fee,search, setSearch,showSearch,setShowSearch,cartItem,addToCart,getCartCount , deleteToCart,changeCart ,totalAmount,
-        getTotalAmount
+        getTotalAmount,backendUrl,setToken,token,
+        navigate, setCartItem
     }
 
     return (
