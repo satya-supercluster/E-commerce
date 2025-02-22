@@ -1,6 +1,6 @@
 import React, { useContext , useState} from 'react'
 import Title from '../components/Title'
-import { ShopContext } from '../context/shopContext'
+import { ShopContext } from '../context/ShopContext'
 import { Link , useNavigate} from 'react-router-dom'
 import { assets } from '../assets/assets'
 import { toast } from 'react-toastify'
