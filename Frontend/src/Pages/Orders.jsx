@@ -1,9 +1,39 @@
-import React, { useContext } from 'react'
+import React, { useContext , useState, useEffect} from 'react'
 import { ShopContext } from '../context/shopContext'
 import Title from '../components/Title';
 
 const Orders = () => {
-  const {products, currency} = useContext(ShopContext);
+  const {backendUrl, token, currency} = useContext(ShopContext);
+
+    const [orderData, setorderData] = useState([]);
+
+    const loadOrderData = async () =>{
+      try{
+          if(!token){
+            return null;
+          }
+
+          
+          // const response = await axios.post(backendUrl+'/yogi/v1/order/userorders',{} ,{headers:{token}} );
+          const responce =await fetch(`${backendUrl}/yogi/v1/order/userorders`,{
+            method:'POST',
+            headers:{
+              'Content-Type':'application/json',
+              token
+            }
+          });
+          const response = await responce.json();
+          console.log(response.orders);
+      }
+      catch(error){
+
+      }
+    }
+
+    useEffect(() => {
+      loadOrderData();
+    }, [token])
+
   return (
     <div className='border-t pt-16'>
       
@@ -13,7 +43,7 @@ const Orders = () => {
 
       <div>
         {
-          products.slice(1,4).map((item,index)=>{
+          orderData.map((item,index)=>{
             return (
               <div key={index} className='py-4  border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
               <div className='flex items-start gap-6 text-sm'>

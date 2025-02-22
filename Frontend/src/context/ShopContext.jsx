@@ -90,11 +90,35 @@ const ShopContextProvider = (props) =>{
             
         }
 
+        updateQuantity(itemId, size, 0);
+
 
         
         setCartItem(cartData);
 
         // console.log(cartItem);
+    }
+
+    const updateQuantity = async (itemId , size, quantity) =>{
+        console.log(itemId, size, quantity);
+        let cartData = structuredClone(cartItem);
+        console.log(cartData[itemId][size]);
+        cartData[itemId][size] = quantity;
+
+        setCartItem(cartData);
+
+        if(token){
+            try {
+                const response = await axios.post(backendUrl+'/yogi/v1/cart/update', {itemId, size, quantity}, {headers:{token}})
+
+                console.log(response.data);
+
+            } catch (error) {
+                console.log(error)
+                toast.error(error.message)
+            }
+        }
+
     }
 
     const getCartCount = () =>{
@@ -130,8 +154,24 @@ const ShopContextProvider = (props) =>{
 
     }
 
+    const getUserCart = async (token) =>{
+        try{
+
+            const response = await axios.post(backendUrl + '/yogi/v1/cart/get' , {}, {headers:{token}})
+            if(response.data.success){
+                setCartItem(response.data.cartData);
+            }
+            
+        }
+        catch(error){
+            console.log(error);
+            toast.error(error.message)
+        }
+    }
+
     useEffect(()=>{
         // addToCart();
+        getTotalAmount();
         console.log(totalAmount);
         console.log(cartItem);
 
@@ -170,14 +210,15 @@ const ShopContextProvider = (props) =>{
     useEffect(()=>{
         if(!token && localStorage.getItem('token')){
             setToken(localStorage.getItem('token'))
+            getUserCart(localStorage.getItem('token'))
 
         }
     },[])
     
     const value ={
-        products,currency,delivery_fee,search, setSearch,showSearch,setShowSearch,cartItem,addToCart,getCartCount , deleteToCart,changeCart ,totalAmount,
+        products,currency,delivery_fee,search, setSearch,showSearch,setShowSearch,setCartItem,cartItem,addToCart,getCartCount , deleteToCart,changeCart ,totalAmount,
         getTotalAmount,backendUrl,setToken,token,
-        navigate, setCartItem
+        navigate, setCartItem,updateQuantity
     }
 
     return (

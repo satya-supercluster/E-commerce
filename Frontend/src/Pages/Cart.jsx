@@ -6,33 +6,41 @@ import { Link , NavLink } from 'react-router-dom'
 
 const Cart = () => {
 
-  const {products , currency , cartItem, addToCart ,changeCart, deleteToCart , totalAmount, getTotalAmount,delivery_fee} = useContext(ShopContext);
+  const {products , currency , cartItem, addToCart ,changeCart, deleteToCart , totalAmount, getTotalAmount,delivery_fee, updateQuantity} = useContext(ShopContext);
 
   const [cartData, setCartData] = useState([]);
  
 
   useEffect(()=>{
 
-    let tempData = [];
+    if(products.length > 0){
 
-    for(const items in cartItem){
-      for(const item in cartItem[items]){
-        if(cartItem[items][item] > 0){
-          tempData.push({
-            _id : items,
-            size: item,
-            quantity: cartItem[items][item]
-          })
+      let tempData = [];
+
+      for(const items in cartItem){
+        for(const item in cartItem[items]){
+          if(cartItem[items][item] > 0){
+            tempData.push({
+              _id : items,
+              size: item,
+              quantity: cartItem[items][item]
+            })
+          }
         }
       }
+      
+    
+      setCartData(tempData);
+     
+     
+      getTotalAmount();
     }
 
-    setCartData(tempData);
-    getTotalAmount();
+    
 
-  },[cartItem,totalAmount])
+  },[cartItem,totalAmount,products])
 
-console.log(cartData);
+// console.log(cartData);
 
   
 
@@ -42,7 +50,7 @@ console.log(cartData);
       { 
         cartData.map((item)=>{
           const data = products.find((items)=> items._id === item._id)
-          console.log(data);
+          
            
           return (
             <div className='flex flex-row  justify-between items-center border-t border-b py-5'>
@@ -61,8 +69,8 @@ console.log(cartData);
     className="h-[40px] min-w-[25px] max-w-[75px] pl-3 border"
     type="number"
     value={cartItem[item._id]?.[item.size] || ""}
-    onChange={(e) => {changeCart(item._id, item.size, parseInt(e.target.value)); getTotalAmount();}
-    }
+    onChange={(e) => {changeCart(item._id, item.size, parseInt(e.target.value)); updateQuantity(item._id, item.size, parseInt(e.target.value));  getTotalAmount();}
+  }
 />
 
 

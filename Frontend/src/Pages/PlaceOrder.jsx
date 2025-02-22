@@ -3,12 +3,18 @@ import Title from '../components/Title'
 import { ShopContext } from '../context/shopContext'
 import { Link , useNavigate} from 'react-router-dom'
 import { assets } from '../assets/assets'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
 const PlaceOrder = () => {
 
-  const {currency, totalAmount, delivery_fee} = useContext(ShopContext);
+  const {navigate,backendUrl,token,cartItem,setCartItem,currency, totalAmount, delivery_fee, products} = useContext(ShopContext);
   
-    const navigate = useNavigate();
+    
+
+    const [method, setMethod] = useState('cod');
+
+    
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -40,14 +46,60 @@ const PlaceOrder = () => {
     return true;
   };
 
-  const onSubmitHandler = (event) => {
+  const onSubmitHandler = async (event) => {
     event.preventDefault();
     if (validateForm()) {
+      try{
+        let orderItems = []
+
+        // console.log(cartItem);
+
+        for(const items in cartItem){
+          for(const item in cartItem[items]){
+            if(cartItem[items][item] > 0){
+              const itemInfo = structuredClone(products.find(products => products._id === items))
+              if(itemInfo){
+                itemInfo.size = item
+                itemInfo.quantity = cartItem[items][item]
+                orderItems.push(itemInfo)
+              }
+            }
+          }
+        }
+
+        let orderData = {
+          address : formData,
+          items :  orderItems,
+          amount: totalAmount + delivery_fee
+        }
+
+        switch(method){
+
+          case 'cod' :
+            const response = await axios.post(backendUrl + '/yogi/v1/order/place', orderData, {headers:{token}});
+            if (response.data.success){
+              setCartItem({})
+              navigate('/orders');
+            }
+            else{
+              toast.error(response.data.message) 
+            }
+          break;
+
+          default : 
+          break
+        }
+      }
+      catch(error){
+          console.log(error);
+          toast.error(error.message);
+      }
       
-      navigate("/orders"); // Navigate only if validation passes
     }
    
   };
+
+
 
  
 

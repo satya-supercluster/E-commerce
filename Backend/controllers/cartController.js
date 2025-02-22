@@ -2,10 +2,12 @@ const userModel = require('../models/userModel')
 
 
 const addToCart = async (req,res) =>{
+    
     try {
         const {userId, itemId, size} = req.body
+        
         const userData = await userModel.findById(userId);
-        const cartData = await userData.cartData;
+        const cartData = userData.cartData;
 
         if(cartData[itemId]){
             if(cartData[itemId][size]){
@@ -40,7 +42,18 @@ const updateCart = async (req,res) =>{
         const userData = await userModel.findById(userId);
         const cartData = await userData.cartData;
 
-        cartData[itemId][size] = quaintity;
+        if (quantity === null || quantity === 0) {
+            // Remove the size if quantity is null or 0
+            delete cartData[itemId][size];
+
+            // If the item has no sizes left, remove the item itself
+            if (Object.keys(cartData[itemId]).length === 0) {
+                delete cartData[itemId];
+            }
+        } else {
+            cartData[itemId][size] = quantity;
+        }
+        console.log(cartData[itemId][size])
 
         await userModel.findByIdAndUpdate(userId, {cartData});
 
@@ -57,7 +70,7 @@ const getUserCart = async (req,res) =>{
     try{
         const {userId} = req.body;
         const userData = await userModel.findById(userId);
-        const cartData = await userData.cartData;
+        const cartData = await userData?.cartData;
 
         res.json({success:true, cartData})
     }

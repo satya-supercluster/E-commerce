@@ -38,5 +38,8 @@ app.use("/yogi/v1/product",productRouter);
 const cartRouter = require("./routers/cartRoute")
 app.use("/yogi/v1/cart",cartRouter);
 
+const orderRoute = require("./routers/orderRoute")
+app.use("/yogi/v1/order",orderRoute);
+
 
 app.listen(PORT, ()=>{console.log(`Server started on port no. ${PORT}`)})
